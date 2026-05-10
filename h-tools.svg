@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="400" height="44" viewBox="0 0 400 44">
+
+  <!--
+    h-tools.svg — "languages & tools" glitch section heading
+    400 × 44 · transparent background
+    Animation cycle: 7.4s  |  burst at 86–93%  (~0.52s)
+    Prefix: ht-
+  -->
+
+  <defs>
+
+    <!-- ░░ GLITCH DISPLACEMENT FILTER ░░ -->
+    <filter id="ht-glitch-filter" x="-8%" y="-20%" width="116%" height="140%"
+            color-interpolation-filters="sRGB">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0 0"
+        numOctaves="1"
+        seed="11"
+        result="noise">
+        <animate
+          attributeName="baseFrequency"
+          values="0 0; 0 0; 0.70 0.09; 0.90 0.14; 0.60 0.08; 0 0"
+          keyTimes="0; 0.86; 0.885; 0.905; 0.925; 1"
+          dur="7.4s"
+          repeatCount="indefinite"
+          calcMode="spline"
+          keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1"/>
+      </feTurbulence>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="noise"
+        scale="0"
+        xChannelSelector="R"
+        yChannelSelector="G">
+        <animate
+          attributeName="scale"
+          values="0; 0; 11; 14; 9; 0"
+          keyTimes="0; 0.86; 0.885; 0.905; 0.925; 1"
+          dur="7.4s"
+          repeatCount="indefinite"
+          calcMode="spline"
+          keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1"/>
+      </feDisplacementMap>
+    </filter>
+
+    <!--
+      ░░ CLIP PATHS FOR HORIZONTAL SLICES ░░
+      Text is 22px at baseline y=32.
+      Cap height ~16px → top of glyphs ~y=16.
+      Band A: y 16–24 (top ~50% of glyph height)
+      Band B: y 24–34 (lower portion + baseline)
+      Base: everything outside both bands
+    -->
+    <clipPath id="ht-slice-a">
+      <rect x="0" y="16" width="400" height="8"/>
+    </clipPath>
+    <clipPath id="ht-slice-b">
+      <rect x="0" y="24" width="400" height="10"/>
+    </clipPath>
+    <clipPath id="ht-slice-base">
+      <rect x="0" y="0"  width="400" height="16"/>
+      <rect x="0" y="34" width="400" height="10"/>
+    </clipPath>
+
+  </defs>
+
+  <!-- ═══════════════════════════════════════════════════
+       STYLES
+  ═══════════════════════════════════════════════════ -->
+  <style>
+
+    .ht-text {
+      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    /* Chromatic aberration ghost layers */
+    .ht-chr-r {
+      fill: #ff2020;
+      opacity: 0;
+      animation: ht-chr-r 7.4s infinite;
+    }
+    .ht-chr-b {
+      fill: #1a8fff;
+      opacity: 0;
+      animation: ht-chr-b 7.4s infinite;
+    }
+
+    @keyframes ht-chr-r {
+      0%, 86%  { opacity: 0;    transform: translateX(0); }
+      87%      { opacity: 0.45; transform: translateX(-8px); }
+      88.5%    { opacity: 0.40; transform: translateX(-12px); }
+      90%      { opacity: 0.44; transform: translateX(-6px); }
+      91.5%    { opacity: 0.20; transform: translateX(-2px); }
+      93%      { opacity: 0;    transform: translateX(0); }
+      100%     { opacity: 0;    transform: translateX(0); }
+    }
+    @keyframes ht-chr-b {
+      0%, 86%  { opacity: 0;    transform: translateX(0); }
+      87%      { opacity: 0.45; transform: translateX(8px); }
+      88.5%    { opacity: 0.40; transform: translateX(13px); }
+      90%      { opacity: 0.44; transform: translateX(7px); }
+      91.5%    { opacity: 0.20; transform: translateX(3px); }
+      93%      { opacity: 0;    transform: translateX(0); }
+      100%     { opacity: 0;    transform: translateX(0); }
+    }
+
+    /* Slice A — top band jumps right then left */
+    .ht-slice-a-group { animation: ht-slice-a 7.4s infinite; }
+    @keyframes ht-slice-a {
+      0%, 86%  { transform: translateX(0); }
+      87%      { transform: translateX(14px); }
+      88%      { transform: translateX(-9px); }
+      88.5%    { transform: translateX(11px); }
+      89.5%    { transform: translateX(-7px); }
+      90.5%    { transform: translateX(8px); }
+      91.5%    { transform: translateX(-3px); }
+      92%      { transform: translateX(2px); }
+      93%      { transform: translateX(0); }
+      100%     { transform: translateX(0); }
+    }
+
+    /* Slice B — bottom band goes opposite direction */
+    .ht-slice-b-group { animation: ht-slice-b 7.4s infinite; }
+    @keyframes ht-slice-b {
+      0%, 86%  { transform: translateX(0); }
+      87%      { transform: translateX(-11px); }
+      88%      { transform: translateX(8px); }
+      88.5%    { transform: translateX(-9px); }
+      89.5%    { transform: translateX(6px); }
+      90.5%    { transform: translateX(-7px); }
+      91.5%    { transform: translateX(3px); }
+      92%      { transform: translateX(-2px); }
+      93%      { transform: translateX(0); }
+      100%     { transform: translateX(0); }
+    }
+
+    /* Main text flicker */
+    .ht-main {
+      fill: #e6edf3;
+      animation: ht-flicker 7.4s infinite;
+    }
+    @keyframes ht-flicker {
+      0%, 86%  { opacity: 1;    fill: #e6edf3; }
+      87%      { opacity: 0.75; fill: #c8d0d8; }
+      88%      { opacity: 1;    fill: #e6edf3; }
+      88.5%    { opacity: 0.60; fill: #b8c0c8; }
+      89.5%    { opacity: 0.90; fill: #dde4eb; }
+      90.5%    { opacity: 0.70; fill: #cdd4db; }
+      91.5%    { opacity: 1;    fill: #e6edf3; }
+      92%      { opacity: 0.86; fill: #e0e7ee; }
+      93%      { opacity: 1;    fill: #e6edf3; }
+      100%     { opacity: 1;    fill: #e6edf3; }
+    }
+
+  </style>
+
+  <!-- ═══════════════════════════════════════════════════
+       RENDER
+  ═══════════════════════════════════════════════════ -->
+
+  <!-- Chromatic aberration ghost copies (behind main text) -->
+  <text class="ht-text ht-chr-r" x="0" y="32" aria-hidden="true">languages &amp; tools</text>
+  <text class="ht-text ht-chr-b" x="0" y="32" aria-hidden="true">languages &amp; tools</text>
+
+  <!-- Main text: base clip (areas outside the two bands) -->
+  <text class="ht-text ht-main" x="0" y="32"
+        clip-path="url(#ht-slice-base)"
+        filter="url(#ht-glitch-filter)">languages &amp; tools</text>
+
+  <!-- Slice A: top band — jumps right -->
+  <g class="ht-slice-a-group">
+    <text class="ht-text ht-main" x="0" y="32"
+          clip-path="url(#ht-slice-a)"
+          filter="url(#ht-glitch-filter)">languages &amp; tools</text>
+  </g>
+
+  <!-- Slice B: lower band — jumps left -->
+  <g class="ht-slice-b-group">
+    <text class="ht-text ht-main" x="0" y="32"
+          clip-path="url(#ht-slice-b)"
+          filter="url(#ht-glitch-filter)">languages &amp; tools</text>
+  </g>
+
+</svg>

@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="400" height="44" viewBox="0 0 400 44">
+
+  <!--
+    h-about.svg — "about me" glitch section heading
+    400 × 44 · transparent background
+    Animation cycle: 6.0s  |  burst at 88–95%  (~0.42s)
+    Prefix: ha-
+  -->
+
+  <defs>
+
+    <!-- ░░ GLITCH DISPLACEMENT FILTER ░░ -->
+    <filter id="ha-glitch-filter" x="-8%" y="-20%" width="116%" height="140%"
+            color-interpolation-filters="sRGB">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0 0"
+        numOctaves="1"
+        seed="3"
+        result="noise">
+        <animate
+          attributeName="baseFrequency"
+          values="0 0; 0 0; 0.65 0.08; 0.85 0.12; 0.55 0.07; 0 0"
+          keyTimes="0; 0.88; 0.905; 0.92; 0.945; 1"
+          dur="6s"
+          repeatCount="indefinite"
+          calcMode="spline"
+          keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1"/>
+      </feTurbulence>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="noise"
+        scale="0"
+        xChannelSelector="R"
+        yChannelSelector="G">
+        <animate
+          attributeName="scale"
+          values="0; 0; 12; 15; 10; 0"
+          keyTimes="0; 0.88; 0.905; 0.92; 0.945; 1"
+          dur="6s"
+          repeatCount="indefinite"
+          calcMode="spline"
+          keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1"/>
+      </feDisplacementMap>
+    </filter>
+
+    <!--
+      ░░ CLIP PATHS FOR HORIZONTAL SLICES ░░
+      Text is 22px at baseline y=32.
+      Cap height ~16px → top of glyphs ~y=16.
+      Band A: y 16–24 (top ~50% of glyph height)
+      Band B: y 24–34 (lower portion + baseline)
+      Base: everything outside both bands
+    -->
+    <clipPath id="ha-slice-a">
+      <rect x="0" y="16" width="400" height="8"/>
+    </clipPath>
+    <clipPath id="ha-slice-b">
+      <rect x="0" y="24" width="400" height="10"/>
+    </clipPath>
+    <clipPath id="ha-slice-base">
+      <rect x="0" y="0"  width="400" height="16"/>
+      <rect x="0" y="34" width="400" height="10"/>
+    </clipPath>
+
+  </defs>
+
+  <!-- ═══════════════════════════════════════════════════
+       STYLES
+  ═══════════════════════════════════════════════════ -->
+  <style>
+
+    .ha-text {
+      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    /* Chromatic aberration ghost layers */
+    .ha-chr-r {
+      fill: #ff2020;
+      opacity: 0;
+      animation: ha-chr-r 6s infinite;
+    }
+    .ha-chr-b {
+      fill: #1a8fff;
+      opacity: 0;
+      animation: ha-chr-b 6s infinite;
+    }
+
+    @keyframes ha-chr-r {
+      0%, 88%  { opacity: 0;    transform: translateX(0); }
+      89%      { opacity: 0.45; transform: translateX(-9px); }
+      90.5%    { opacity: 0.38; transform: translateX(-13px); }
+      92%      { opacity: 0.42; transform: translateX(-7px); }
+      93.5%    { opacity: 0.18; transform: translateX(-3px); }
+      95%      { opacity: 0;    transform: translateX(0); }
+      100%     { opacity: 0;    transform: translateX(0); }
+    }
+    @keyframes ha-chr-b {
+      0%, 88%  { opacity: 0;    transform: translateX(0); }
+      89%      { opacity: 0.45; transform: translateX(9px); }
+      90.5%    { opacity: 0.38; transform: translateX(14px); }
+      92%      { opacity: 0.42; transform: translateX(8px); }
+      93.5%    { opacity: 0.18; transform: translateX(4px); }
+      95%      { opacity: 0;    transform: translateX(0); }
+      100%     { opacity: 0;    transform: translateX(0); }
+    }
+
+    /* Slice A — top band jumps right then left */
+    .ha-slice-a-group { animation: ha-slice-a 6s infinite; }
+    @keyframes ha-slice-a {
+      0%, 88%  { transform: translateX(0); }
+      89%      { transform: translateX(12px); }
+      90%      { transform: translateX(-8px); }
+      90.5%    { transform: translateX(10px); }
+      91.5%    { transform: translateX(-6px); }
+      92.5%    { transform: translateX(7px); }
+      93.5%    { transform: translateX(-2px); }
+      94%      { transform: translateX(3px); }
+      95%      { transform: translateX(0); }
+      100%     { transform: translateX(0); }
+    }
+
+    /* Slice B — bottom band goes opposite direction */
+    .ha-slice-b-group { animation: ha-slice-b 6s infinite; }
+    @keyframes ha-slice-b {
+      0%, 88%  { transform: translateX(0); }
+      89%      { transform: translateX(-10px); }
+      90%      { transform: translateX(7px); }
+      90.5%    { transform: translateX(-8px); }
+      91.5%    { transform: translateX(5px); }
+      92.5%    { transform: translateX(-6px); }
+      93.5%    { transform: translateX(2px); }
+      94%      { transform: translateX(-2px); }
+      95%      { transform: translateX(0); }
+      100%     { transform: translateX(0); }
+    }
+
+    /* Main text flicker */
+    .ha-main {
+      fill: #e6edf3;
+      animation: ha-flicker 6s infinite;
+    }
+    @keyframes ha-flicker {
+      0%, 88%  { opacity: 1;    fill: #e6edf3; }
+      89%      { opacity: 0.78; fill: #c8d0d8; }
+      90%      { opacity: 1;    fill: #e6edf3; }
+      90.5%    { opacity: 0.62; fill: #b8c0c8; }
+      91.5%    { opacity: 0.92; fill: #dde4eb; }
+      92.5%    { opacity: 0.72; fill: #cdd4db; }
+      93.5%    { opacity: 1;    fill: #e6edf3; }
+      94%      { opacity: 0.88; fill: #e0e7ee; }
+      95%      { opacity: 1;    fill: #e6edf3; }
+      100%     { opacity: 1;    fill: #e6edf3; }
+    }
+
+  </style>
+
+  <!-- ═══════════════════════════════════════════════════
+       RENDER
+  ═══════════════════════════════════════════════════ -->
+
+  <!-- Chromatic aberration ghost copies (behind main text) -->
+  <text class="ha-text ha-chr-r" x="0" y="32" aria-hidden="true">about me</text>
+  <text class="ha-text ha-chr-b" x="0" y="32" aria-hidden="true">about me</text>
+
+  <!-- Main text: base clip (areas outside the two bands) -->
+  <text class="ha-text ha-main" x="0" y="32"
+        clip-path="url(#ha-slice-base)"
+        filter="url(#ha-glitch-filter)">about me</text>
+
+  <!-- Slice A: top band — jumps right -->
+  <g class="ha-slice-a-group">
+    <text class="ha-text ha-main" x="0" y="32"
+          clip-path="url(#ha-slice-a)"
+          filter="url(#ha-glitch-filter)">about me</text>
+  </g>
+
+  <!-- Slice B: lower band — jumps left -->
+  <g class="ha-slice-b-group">
+    <text class="ha-text ha-main" x="0" y="32"
+          clip-path="url(#ha-slice-b)"
+          filter="url(#ha-glitch-filter)">about me</text>
+  </g>
+
+</svg>

@@ -1,0 +1,310 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="800" height="120" viewBox="0 0 800 120">
+
+  <!--
+    header.svg — "norenaboi" glitch / multiverse-split banner
+    800 × 120 · GitHub dark (#0d1117) background
+    Animation cycle: 4.8s  |  burst at 82–94%  (~0.58s)
+    Techniques:
+      · CSS @keyframes: chromatic aberration (R/G/B text copies), slice jumps,
+        name flicker, subtitle TV-static fade-in, scanline flash
+      · SMIL <animate>: feTurbulence baseFrequency + feDisplacementMap scale
+      · <clipPath>: 3 horizontal bands + base residual for independent slice translation
+      · <filter>: feTurbulence + feDisplacementMap glitch burst
+      · <pattern>: scanline overlay
+  -->
+
+  <defs>
+
+    <!-- ░░ GLITCH DISPLACEMENT FILTER ░░ -->
+    <filter id="glitch-filter" x="-8%" y="-8%" width="116%" height="116%"
+            color-interpolation-filters="sRGB">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0 0"
+        numOctaves="1"
+        seed="7"
+        result="noise">
+        <!-- Ramp turbulence up during the burst window, then back to 0 -->
+        <animate
+          attributeName="baseFrequency"
+          values="0 0; 0 0; 0.7 0.1; 0.9 0.15; 0.6 0.08; 0 0"
+          keyTimes="0; 0.82; 0.85; 0.875; 0.92; 1"
+          dur="4.8s"
+          repeatCount="indefinite"
+          calcMode="spline"
+          keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1"/>
+      </feTurbulence>
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="noise"
+        scale="0"
+        xChannelSelector="R"
+        yChannelSelector="G">
+        <animate
+          attributeName="scale"
+          values="0; 0; 20; 26; 16; 0"
+          keyTimes="0; 0.82; 0.85; 0.875; 0.92; 1"
+          dur="4.8s"
+          repeatCount="indefinite"
+          calcMode="spline"
+          keySplines="0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1; 0 0 1 1"/>
+      </feDisplacementMap>
+    </filter>
+
+    <!--
+      ░░ CLIP PATHS FOR HORIZONTAL SLICES ░░
+      Text is 64px bold at y=88 (baseline).
+      Cap height ≈ 46px → top of glyphs ≈ y=42.
+      We carve the glyph area (y 42–92) into three bands
+      plus a "base" clip that covers everything outside those bands.
+    -->
+    <!-- Band A : y 42–60  (top ~40% of glyph height) -->
+    <clipPath id="slice-a">
+      <rect x="0" y="42" width="800" height="18"/>
+    </clipPath>
+    <!-- Band B : y 60–74  (mid band) -->
+    <clipPath id="slice-b">
+      <rect x="0" y="60" width="800" height="14"/>
+    </clipPath>
+    <!-- Band C : y 74–92  (lower band, includes descenders) -->
+    <clipPath id="slice-c">
+      <rect x="0" y="74" width="800" height="20"/>
+    </clipPath>
+    <!-- Base   : everything above band A and below band C -->
+    <clipPath id="slice-base">
+      <rect x="0" y="0"  width="800" height="42"/>
+      <rect x="0" y="94" width="800" height="26"/>
+    </clipPath>
+
+    <!-- ░░ SCANLINE PATTERN ░░ -->
+    <pattern id="scanline-pat" x="0" y="0" width="800" height="4"
+             patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="800" height="1" fill="#fff" opacity="0.05"/>
+      <rect x="0" y="2" width="800" height="1" fill="#000" opacity="0.07"/>
+    </pattern>
+
+  </defs>
+
+  <!-- ═══════════════════════════════════════════════════
+       STYLES
+  ═══════════════════════════════════════════════════ -->
+  <style>
+
+    /* ── Shared font ── */
+    .name-text {
+      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+    }
+    .sub-text {
+      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── Chromatic aberration ghost layers ──
+       Hidden at rest, bleed apart during the burst. */
+    .chr-r {
+      fill: #ff2020;
+      opacity: 0;
+      animation: chr-r 4.8s infinite;
+    }
+    .chr-g {
+      fill: #00ff88;
+      opacity: 0;
+      animation: chr-g 4.8s infinite;
+    }
+    .chr-b {
+      fill: #1a8fff;
+      opacity: 0;
+      animation: chr-b 4.8s infinite;
+    }
+
+    @keyframes chr-r {
+      0%, 82%  { opacity: 0;    transform: translateX(0); }
+      83%      { opacity: 0.50; transform: translateX(-10px); }
+      85%      { opacity: 0.40; transform: translateX(-14px); }
+      87%      { opacity: 0.55; transform: translateX(-8px); }
+      89%      { opacity: 0.30; transform: translateX(-12px); }
+      91%      { opacity: 0.15; transform: translateX(-3px); }
+      93%      { opacity: 0;    transform: translateX(0); }
+      100%     { opacity: 0;    transform: translateX(0); }
+    }
+    @keyframes chr-g {
+      0%, 82%  { opacity: 0;    transform: translate(0, 0); }
+      83%      { opacity: 0.30; transform: translate(3px, -3px); }
+      85%      { opacity: 0.20; transform: translate(-3px, 2px); }
+      87%      { opacity: 0.35; transform: translate(1px, -2px); }
+      89%      { opacity: 0.18; transform: translate(0, 1px); }
+      91%      { opacity: 0.08; transform: translate(0, 0); }
+      93%      { opacity: 0;    transform: translate(0, 0); }
+      100%     { opacity: 0;    transform: translate(0, 0); }
+    }
+    @keyframes chr-b {
+      0%, 82%  { opacity: 0;    transform: translateX(0); }
+      83%      { opacity: 0.50; transform: translateX(10px); }
+      85%      { opacity: 0.40; transform: translateX(15px); }
+      87%      { opacity: 0.55; transform: translateX(9px); }
+      89%      { opacity: 0.30; transform: translateX(13px); }
+      91%      { opacity: 0.15; transform: translateX(4px); }
+      93%      { opacity: 0;    transform: translateX(0); }
+      100%     { opacity: 0;    transform: translateX(0); }
+    }
+
+    /* ── Slice A — top band jumps hard right, then left, chaotic ── */
+    .slice-a-group { animation: slice-a 4.8s infinite; }
+    @keyframes slice-a {
+      0%, 82%  { transform: translateX(0); }
+      83%      { transform: translateX(30px); }
+      84%      { transform: translateX(-16px); }
+      85%      { transform: translateX(24px); }
+      86%      { transform: translateX(-10px); }
+      87%      { transform: translateX(20px); }
+      88%      { transform: translateX(-6px); }
+      90%      { transform: translateX(8px); }
+      92%      { transform: translateX(-2px); }
+      93%      { transform: translateX(0); }
+      100%     { transform: translateX(0); }
+    }
+
+    /* ── Slice B — mid band goes opposite direction ── */
+    .slice-b-group { animation: slice-b 4.8s infinite; }
+    @keyframes slice-b {
+      0%, 82%  { transform: translateX(0); }
+      83%      { transform: translateX(-22px); }
+      84%      { transform: translateX(12px); }
+      85%      { transform: translateX(-18px); }
+      86%      { transform: translateX(9px); }
+      87%      { transform: translateX(-14px); }
+      89%      { transform: translateX(6px); }
+      91%      { transform: translateX(-3px); }
+      93%      { transform: translateX(0); }
+      100%     { transform: translateX(0); }
+    }
+
+    /* ── Slice C — lower band, small lateral nudge ── */
+    .slice-c-group { animation: slice-c 4.8s infinite; }
+    @keyframes slice-c {
+      0%, 82%  { transform: translateX(0); }
+      83%      { transform: translateX(14px); }
+      85%      { transform: translateX(-10px); }
+      86%      { transform: translateX(8px); }
+      88%      { transform: translateX(-6px); }
+      90%      { transform: translateX(4px); }
+      92%      { transform: translateX(0); }
+      100%     { transform: translateX(0); }
+    }
+
+    /* ── Main text flicker (opacity + subtle fill shift) ── */
+    .main-name {
+      fill: #ffffff;
+      animation: name-flicker 4.8s infinite;
+    }
+    @keyframes name-flicker {
+      0%, 82%  { opacity: 1;    fill: #ffffff; }
+      83%      { opacity: 0.80; fill: #d8d8d8; }
+      84%      { opacity: 1;    fill: #ffffff; }
+      85%      { opacity: 0.65; fill: #c0c0c0; }
+      86%      { opacity: 0.95; fill: #f0f0f0; }
+      87%      { opacity: 0.75; fill: #dcdcdc; }
+      88%      { opacity: 1;    fill: #ffffff; }
+      89%      { opacity: 0.85; fill: #ebebeb; }
+      91%      { opacity: 1;    fill: #ffffff; }
+      100%     { opacity: 1;    fill: #ffffff; }
+    }
+
+    /* ── Scanline overlay (flashes during burst) ── */
+    .scanlines {
+      opacity: 0;
+      animation: scanlines-flash 4.8s infinite;
+    }
+    @keyframes scanlines-flash {
+      0%, 82%  { opacity: 0; }
+      83%      { opacity: 0.20; }
+      85%      { opacity: 0.14; }
+      87%      { opacity: 0.22; }
+      89%      { opacity: 0.10; }
+      91%      { opacity: 0; }
+      100%     { opacity: 0; }
+    }
+
+    /* ── Subtitle TV-static fade-in (plays once on load) ── */
+    .subtitle {
+      fill: #8b949e;
+      animation: sub-static-in 2.6s forwards;
+    }
+    @keyframes sub-static-in {
+      0%   { opacity: 0; }
+      3%   { opacity: 0.55; }
+      5%   { opacity: 0; }
+      9%   { opacity: 0.75; }
+      11%  { opacity: 0.05; }
+      15%  { opacity: 0.65; }
+      17%  { opacity: 0; }
+      21%  { opacity: 0.85; }
+      23%  { opacity: 0.15; }
+      27%  { opacity: 0.80; }
+      29%  { opacity: 0.03; }
+      33%  { opacity: 0.88; }
+      35%  { opacity: 0.55; }
+      39%  { opacity: 0.92; }
+      41%  { opacity: 0.35; }
+      47%  { opacity: 1; }
+      51%  { opacity: 0.68; }
+      55%  { opacity: 0.96; }
+      61%  { opacity: 1; }
+      65%  { opacity: 0.82; }
+      70%  { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+  </style>
+
+  <!-- ═══════════════════════════════════════════════════
+       RENDER
+  ═══════════════════════════════════════════════════ -->
+
+  <!-- Background fill -->
+  <rect width="800" height="120" fill="#0d1117"/>
+
+  <!-- Scanline texture overlay (only visible during burst) -->
+  <rect class="scanlines" width="800" height="120" fill="url(#scanline-pat)"/>
+
+  <!-- ── Chromatic aberration ghost copies (behind main text) ── -->
+  <text class="name-text chr-r" x="80" y="88" aria-hidden="true">norenaboi</text>
+  <text class="name-text chr-g" x="80" y="88" aria-hidden="true">norenaboi</text>
+  <text class="name-text chr-b" x="80" y="88" aria-hidden="true">norenaboi</text>
+
+  <!-- ── Main name: base clip (top cap + below descenders — unsliced area) ── -->
+  <text class="name-text main-name" x="80" y="88"
+        clip-path="url(#slice-base)"
+        filter="url(#glitch-filter)">norenaboi</text>
+
+  <!-- ── Slice A: top band — jumps right ── -->
+  <g class="slice-a-group">
+    <text class="name-text main-name" x="80" y="88"
+          clip-path="url(#slice-a)"
+          filter="url(#glitch-filter)">norenaboi</text>
+  </g>
+
+  <!-- ── Slice B: mid band — jumps left ── -->
+  <g class="slice-b-group">
+    <text class="name-text main-name" x="80" y="88"
+          clip-path="url(#slice-b)"
+          filter="url(#glitch-filter)">norenaboi</text>
+  </g>
+
+  <!-- ── Slice C: lower band — small nudge ── -->
+  <g class="slice-c-group">
+    <text class="name-text main-name" x="80" y="88"
+          clip-path="url(#slice-c)"
+          filter="url(#glitch-filter)">norenaboi</text>
+  </g>
+
+  <!-- ── Subtitle: TV-static fade-in, then steady ── -->
+  <text class="sub-text subtitle" x="82" y="112">developer &amp; student &#x2014; building things on the internet.</text>
+
+</svg>
