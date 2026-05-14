@@ -8,7 +8,7 @@ ___
 
 <img src="h-about.svg" alt="about me" width="400"/>
 
-- 2nd-year **Informatics Systems Engineering** student at Mehmet Akif Ersoy University
+- 2nd-year **Information Systems Engineering** student at Mehmet Akif Ersoy University
 - Full-Stack Developer. REST APIs, proxy middleware, desktop apps
 - Backend-focused, but I build end-to-end
 - Reach me at **ismailkara0511@gmail.com**
